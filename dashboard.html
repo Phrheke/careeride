@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ name }}!</h1>
+        <button onclick="window.location.href='/logout'" class="next-btn" style="float: right; margin-bottom: 20px;">Logout</button>
+
+        <h3>Your Previous Recommendations</h3>
+        <ul class="recommendations-list">
+            {% for rec in recommendations %}
+                <li>
+                    <strong>Career:</strong> {{ rec.career }} <br>
+                    <strong>Date:</strong> {{ rec.date.strftime('%Y-%m-%d %H:%M:%S') }}
+                </li>
+            {% else %}
+                <li>No recommendations available.</li>
+            {% endfor %}
+        </ul>
+
+        <hr>
+
+        <h3>Select Your Interests/Skills:</h3>
+        <form id="recommendationForm">
+            <div id="interest-list">
+                {% for interest in interests %}
+                    <label><input type="checkbox" name="interest" value="{{ interest }}"> {{ interest }}</label><br>
+                {% endfor %}
+            </div>
+            
+            <!-- Review Section -->
+            <div id="review-section" style="margin-top: 20px; display: none;">
+                <h4>Selected Skills and Interests:</h4>
+                <ul id="selected-interests-list"></ul>
+            </div>
+
+            <button type="button" id="reviewButton" class="next-btn" style="margin-top: 20px;">Review Selection</button>
+            <button type="submit" class="next-btn" style="display: none; margin-top: 20px;" id="submitButton">Get Recommendation</button>
+        </form>
+
+        <div id="result"></div>
+        <br>
+        <button onclick="window.location.href='/questionnaire'" class="next-btn">Not Satisfied? Take Questionnaire</button>
+    </div>
+
+    <script>
+        const form = document.getElementById('recommendationForm');
+        const reviewButton = document.getElementById('reviewButton');
+        const submitButton = document.getElementById('submitButton');
+        const reviewSection = document.getElementById('review-section');
+        const selectedInterestsList = document.getElementById('selected-interests-list');
+
+        reviewButton.addEventListener('click', function() {
+            const formData = new FormData(form);
+            const selectedInterests = [];
+            formData.forEach((value, key) => {
+                if (key === 'interest') {
+                    selectedInterests.push(value);
+                }
+            });
+
+            if (selectedInterests.length > 0) {
+                selectedInterestsList.innerHTML = '';
+                selectedInterests.forEach(interest => {
+                    const li = document.createElement('li');
+                    li.textContent = interest;
+                    selectedInterestsList.appendChild(li);
+                });
+                reviewSection.style.display = 'block';
+                submitButton.style.display = 'inline-block';
+            } else {
+                alert('Please select at least one interest or skill before reviewing.');
+            }
+        });
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const selectedInterests = [];
+            formData.forEach((value, key) => {
+                if (key === 'interest') {
+                    selectedInterests.push(value);
+                }
+            });
+
+            const data = {
+                interest: selectedInterests
+            };
+
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<div class="question-card"><p>{{ name }}, based on your interests, we recommend you consider a career in ${data.message}.</p></div>`;
+            });
+        });
+    </script>
+</body>
+</html>
