@@ -45,8 +45,19 @@ body {
     color: white;         /* Set the text color */
     font-size: 20px;      /* Set the font size */
     margin: 20px;
-    
-   
+}  
+
+
+#interest-list {
+    display: flex; /* Use flex layout */
+    flex-wrap: wrap; /* Allow items to wrap to the next row */
+    gap: 4px; /* Add spacing between items */
+    justify-content: space-between; /* Distribute items evenly */
+}
+
+#interest-list label {
+    flex: 0 1 20px; /* Flex item: Grow/Shrink is disabled, width is px */
+    min-width: 200px; /* Ensure a minimum width of 30px */
 }
 
 h1 {
@@ -137,4 +148,59 @@ input[type="radio"] {
         opacity: 1;
         transform: translateY(0);
     }
+}
+/* Unordered list styling */
+ul {
+    
+    list-style: none; /* Remove default bullets */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* Create 3 equal columns */
+    gap: 10px; /* Add spacing between columns and rows */
+}
+
+ul li {
+    background: #e0e7ff; /* Light indigo background */
+    padding: 8px; /* Add padding for better spacing */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 14px; /* Professional font size */
+    color: #333; /* Neutral text color */
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease;
+    text-align: center; /* Center align text */
+}
+
+ul li:hover {
+    background: #c7d2fe; /* Highlight on hover */
+    cursor: pointer; /* Indicate clickable behavior */
+}
+
+/* Styling for all checkboxes */
+input[type="checkbox"] {
+    appearance: none; /* Remove default styling */
+    padding: 0%;
+    width: 18px;
+    height: 20px;
+    border: 2px solid #d9daec; /* Indigo border */
+    border-radius: 4px; /* Rounded corners */
+    outline: none; /* Remove focus outline */
+    cursor: pointer; /* Change cursor to pointer */
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #61dafb; /* Indigo fill when checked */
+    border-color: #61dafb; /* Match border with fill */
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✔'; /* Add checkmark */
+    position: absolute;
+    font-size: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; /* White checkmark */
 }
