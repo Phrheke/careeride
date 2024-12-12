@@ -29,10 +29,18 @@
         <form id="recommendationForm">
             <div id="interest-list">
                 {% for interest in interests %}
-                    <label><input type="checkbox" name="interest" value="{{ interest }}">{{ interest }}</label><br>
+                    <label><input type="checkbox" name="interest" value="{{ interest }}"> {{ interest }}</label><br>
                 {% endfor %}
             </div>
-            <button type="submit" class="next-btn">Get Recommendation</button>
+            
+            <!-- Review Section -->
+            <div id="review-section" style="margin-top: 20px; display: none;">
+                <h4>Selected Skills and Interests:</h4>
+                <ul id="selected-interests-list"></ul>
+            </div>
+
+            <button type="button" id="reviewButton" class="next-btn" style="margin-top: 20px;">Review Selection</button>
+            <button type="submit" class="next-btn" style="display: none; margin-top: 20px;" id="submitButton">Get Recommendation</button>
         </form>
 
         <div id="result"></div>
@@ -42,6 +50,34 @@
 
     <script>
         const form = document.getElementById('recommendationForm');
+        const reviewButton = document.getElementById('reviewButton');
+        const submitButton = document.getElementById('submitButton');
+        const reviewSection = document.getElementById('review-section');
+        const selectedInterestsList = document.getElementById('selected-interests-list');
+
+        reviewButton.addEventListener('click', function() {
+            const formData = new FormData(form);
+            const selectedInterests = [];
+            formData.forEach((value, key) => {
+                if (key === 'interest') {
+                    selectedInterests.push(value);
+                }
+            });
+
+            if (selectedInterests.length > 0) {
+                selectedInterestsList.innerHTML = '';
+                selectedInterests.forEach(interest => {
+                    const li = document.createElement('li');
+                    li.textContent = interest;
+                    selectedInterestsList.appendChild(li);
+                });
+                reviewSection.style.display = 'block';
+                submitButton.style.display = 'inline-block';
+            } else {
+                alert('Please select at least one interest or skill before reviewing.');
+            }
+        });
+
         form.addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(form);
